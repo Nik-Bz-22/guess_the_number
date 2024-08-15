@@ -1,47 +1,55 @@
 import random
+class GuessTheNumberGame:
+
+    def __init__(self, attempts_count=1, left_bound=0, right_bound=1):
+        self.left_bound = left_bound
+        self.right_bound = right_bound
+        self.attempts_count = attempts_count
+        self.target_number = None
+
+    def __str__(self):
+        return f"[{self.left_bound} : {self.right_bound}] ({self.attempts_count})"
+
+    def set_bounds(self, left, right):
+        self.left_bound = left
+        self.right_bound = right
+
+    def set_and_get_num(self):
+        self.target_number = random.randint(self.left_bound, self.right_bound)
 
 
-def main():
+    def compare_answer(self, answ):
+        if answ == self.target_number:
+            return 1
+        return 0
 
-    l_side = int(input('Enter teh left side: '))
-    r_side = int(input('Enter teh right side: '))
-    attempts = int(input('Enter attempts count: '))
+    def check_answer(self, answ):
+        if self.left_bound > answ or self.right_bound < answ:
+            return 0
+        return 1
 
-    if attempts <= 0 or l_side >= r_side:
-        print('Input another numbers!!!')
-        return
+    def play(self):
+        self.set_and_get_num()
+        print(self.target_number)
+        for atmp in range(1, self.attempts_count+1):
+            print(f"Your attempt #{atmp}")
 
-
-    random_number = random.randint(l_side, r_side+1)
-    print(random_number)
-
-    for i in range(1, attempts+1):
-        print(f'Its {i} attempts')
-
-        try:
-            answer = int(input('Enter your number: '))
-        except ValueError:
-            print('Input number')
-            continue
-
-        if answer == random_number:
-            print('You won!!!')
-            return
-
-        if answer < random_number:
-            print('Too small')
-        else:
-            print('Too big')
-
-        if i == attempts:
-            print('It was your last attempt!!!')
-            return
-        print('Try again')
+            while (answer := input('Enter your number: ')) and (not answer.isdigit()):
+                print(f"<{answer}>", "[It isn't a number]")
+            else:
+                answer = int(answer)
 
 
-if __name__ == '__main__':
-    flag = True
-    while flag:
-        main()
-        flag = int(input("Do you want to play again? (1/0)"))
-        #print(flag)
+            if not self.check_answer(answer):
+                print("[Your number out of range]")
+
+            if self.compare_answer(answer):
+                print("YOU WIN")
+                return
+
+            print("TRY AGAIN\n", "_"*20, sep="")
+
+
+
+game = GuessTheNumberGame(attempts_count=3, left_bound=5, right_bound=20)
+game.play()
