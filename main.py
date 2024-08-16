@@ -17,9 +17,30 @@ def handle_keyboard_interrupt(func):
 
 
 class Tips:
+
     def odd_or_even(self, settings={}):
         print("Odd" if settings["game"].target_number % 2 == 1 else "Even")
+        return 1
 
+    def more_or_less_then(self, settings={}):
+        if not settings["arg"]:
+            print("You missed an argument for:", "(ml=?)")
+            return 0
+        try:
+            int_arg = int(settings["arg"])
+        except ValueError:
+            print("Argument must be a number")
+            return 0
+        target = settings["game"].target_number
+        if target > int_arg:
+            print(f"{int_arg} is less then target number")
+
+        elif target == int_arg:
+            print("It is right answer!!")
+
+        else:
+            print(f"{int_arg} is greater then target number")
+        return 1
 
 class GuessTheNumberGame:
     tips_gen = Tips()
@@ -33,7 +54,7 @@ class GuessTheNumberGame:
         self.message         = f'[{self.left_bound} : {self.right_bound}]\nEnter your number: '
         self.tips            = {
                                     ":oe": {"func": GuessTheNumberGame.tips_gen.odd_or_even, "count": 1},
-
+                                    ":ml": {"func": GuessTheNumberGame.tips_gen.more_or_less_then, "count": 2},
                                 }
 
 
@@ -57,24 +78,40 @@ class GuessTheNumberGame:
             return 0
         return 1
 
+    def command_handle(self, answer) -> bool:
+        param = answer.split("=")[:2]
+        command = param[0]
+        if command in self.tips:
+            if self.tips[command]["count"] > 0:
+                if self.tips[command]["func"]({"game": self, "arg": param[-1] if len(param) > 1 else None}):
+                    self.tips[command]["count"] -= 1
+            else:
+                print(f"You've run out of ({command}) tips")
+
+            return 1
+        return 0
+
     @handle_keyboard_interrupt
     def play(self):
         # self.set_and_get_num()
         print(self.target_number)
+        ll = [f"{item[0]} - {item[1]["count"]}" for item in self.tips.items()]
+        print("#" * 30)
+        print(f"Yoy have:\n\t", "\t".join(ll), sep='')
+        print("#" * 30)
         for atmp in range(1, self.attempts_count+1):
             rest = self.attempts_count-atmp
+
             print(f"Your attempt #{atmp} ({rest} more left)")
+
 
             while (answer := input(self.message).strip()) and (not answer.lstrip('-').isdigit()) or (len(answer) <= 0):
 
-                if answer in self.tips:
-                    if self.tips[answer]["count"] > 0:
-                        self.tips[answer]["func"]({"game": self})
-                        self.tips[answer]["count"] -= 1
-                    else:
-                        print(f"You've run out of ({answer}) tips")
-                    continue
+                if ":" in answer:
+                    if self.command_handle(answer):
+                        continue
                 print(f"<{answer}>", "[It isn't a number]")
+
             else:
                 answer = int(answer)
 
