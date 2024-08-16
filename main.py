@@ -9,7 +9,7 @@ class GuessTheNumberGame:
 
 
     def __str__(self):
-        return f"[{self.left_bound} : {self.right_bound}] ({self.attempts_count})"
+        return f"Game[{self.left_bound} : {self.right_bound}] ({self.attempts_count})"
 
     def set_bounds(self, left, right):
         self.left_bound = left
@@ -58,6 +58,9 @@ class GuessTheNumberGame:
 
 if __name__ == "__main__":
     import cli_handler
+    cli_handler.display_welcome_message()
     args = cli_handler.get_cli_args()
     game = GuessTheNumberGame(**args)
     game.play()
+
+
