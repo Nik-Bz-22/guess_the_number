@@ -1,19 +1,5 @@
 import random
-
-
-def handle_keyboard_interrupt(func):
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except KeyboardInterrupt:
-            print("\nBye-Bye ):")
-
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-            raise
-
-    return wrapper
-
+import utils
 
 
 class Tips:
@@ -51,7 +37,6 @@ class GuessTheNumberGame:
         self.target_number   = None
         self.set_and_get_num()
 
-        self.message         = f'[{self.left_bound} : {self.right_bound}]\nEnter your number: '
         self.tips            = {
                                     ":oe": {"func": GuessTheNumberGame.tips_gen.odd_or_even, "count": 1},
                                     ":ml": {"func": GuessTheNumberGame.tips_gen.more_or_less_then, "count": 2},
@@ -91,21 +76,22 @@ class GuessTheNumberGame:
             return 1
         return 0
 
-    @handle_keyboard_interrupt
+
+    @utils.handle_keyboard_interrupt
     def play(self):
         # self.set_and_get_num()
         print(self.target_number)
         ll = [f"{item[0]} - {item[1]["count"]}" for item in self.tips.items()]
         print("#" * 30)
-        print(f"Yoy have:\n\t", "\t".join(ll), sep='')
+        print(f"Yoy have:\t", "\t".join(ll), sep='')
         print("#" * 30)
         for atmp in range(1, self.attempts_count+1):
             rest = self.attempts_count-atmp
 
             print(f"Your attempt #{atmp} ({rest} more left)")
+            print(f"[{self.left_bound} : {self.right_bound}]")
 
-
-            while (answer := input(self.message).strip()) and (not answer.lstrip('-').isdigit()) or (len(answer) <= 0):
+            while (answer := input('Enter your number: ').strip()) and (not answer.lstrip('-').isdigit()) or (len(answer) <= 0):
 
                 if ":" in answer:
                     if self.command_handle(answer):
@@ -133,10 +119,22 @@ class GuessTheNumberGame:
 
 
 if __name__ == "__main__":
-    import cli_handler
-    cli_handler.display_welcome_message()
-    args_ = cli_handler.get_cli_args()
+    import sys
+
+    if sys.stdin.isatty():    # CLI
+        import cli_handler
+        args_ = cli_handler.get_cli_args()
+
+    else:      # IDE
+        args_ = {"left_bound": 100, "right_bound": 200, "attempts_count": 10}
+
+
+
+    utils.display_welcome_message()
+
     game = GuessTheNumberGame(**args_)
     game.play()
+
+
 
 

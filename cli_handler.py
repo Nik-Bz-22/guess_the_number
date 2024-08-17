@@ -1,6 +1,4 @@
-
 import argparse
-from art import tprint
 
 
 def get_cli_args() -> dict:
@@ -23,5 +21,3 @@ def get_cli_args() -> dict:
     return args
 
 
-def display_welcome_message():
-    tprint("Guess   Number", font="medium")
