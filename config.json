@@ -1,0 +1,27 @@
+
+{
+  "lv1":
+  {
+          "left_bound": 1,
+          "right_bound": 10,
+          "attempts_count": 5,
+          "oe": 1,
+          "ml": 0
+  },
+  "lv2":
+  {
+          "left_bound": 6,
+          "right_bound": 30,
+          "attempts_count": 6,
+          "oe": 1,
+          "ml": 2
+  },
+  "lv3":
+  {
+          "left_bound": -27,
+          "right_bound": 23,
+          "attempts_count": 7,
+          "oe": 1,
+          "ml": 3
+  }
+}

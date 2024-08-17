@@ -30,7 +30,7 @@ class Tips:
 
 class GuessTheNumberGame:
     tips_gen = Tips()
-    def __init__(self, attempts_count=1, left_bound=0, right_bound=1):
+    def __init__(self, attempts_count=1, left_bound=0, right_bound=1, oe=1, ml=1):
         self.left_bound      = left_bound if left_bound < right_bound else 0
         self.right_bound     = right_bound if right_bound > left_bound else 1
         self.attempts_count  = attempts_count if attempts_count > 0 else 1
@@ -38,8 +38,8 @@ class GuessTheNumberGame:
         self.set_and_get_num()
 
         self.tips            = {
-                                    ":oe": {"func": GuessTheNumberGame.tips_gen.odd_or_even, "count": 1},
-                                    ":ml": {"func": GuessTheNumberGame.tips_gen.more_or_less_then, "count": 2},
+                                    ":oe": {"func": GuessTheNumberGame.tips_gen.odd_or_even, "count": oe},
+                                    ":ml": {"func": GuessTheNumberGame.tips_gen.more_or_less_then, "count": ml},
                                 }
 
 
@@ -120,20 +120,46 @@ class GuessTheNumberGame:
 
 if __name__ == "__main__":
     import sys
-
+    import json
     if sys.stdin.isatty():    # CLI
         import cli_handler
         args_ = cli_handler.get_cli_args()
 
     else:      # IDE
-        args_ = {"left_bound": 100, "right_bound": 200, "attempts_count": 10}
+        args_ = {"left_bound": 100, "right_bound": 200, "attempts_count": 10, "oe": 3, "ml": 3}
 
 
 
     utils.display_welcome_message()
 
-    game = GuessTheNumberGame(**args_)
-    game.play()
+
+    while True:
+        created = int(input(f"Do you want to play already created levels? (0/1): "))
+        if created:
+            with open("config.json", "r") as levels_file:
+                data = levels_file.read()
+
+            lvls = json.loads(data)
+            lvl_count = len(lvls)
+
+            lvl_choice = int(input(f"Which level do you want to play? (1 - {lvl_count}): "))
+
+            print(lvls[f"lv{lvl_choice}"])
+            game = GuessTheNumberGame(**lvls[f"lv{lvl_choice}"])
+            game.play()
+
+        else:
+            yes_create = int(input("Do you want to create level? (0/1)"))
+            if yes_create:
+                print("Format: left bound(integer)-right bound(integer)-attempts count(integer)|count of tips oe,ml(also written with a hyphen). Example: 1-10-2|1-1")
+                user_input = input("Enter: ").strip().split("|")
+                settings = user_input[0].split("-")
+                tips = user_input[1].split("-")
+                user_lvl = {"left_bound": int(settings[0]), "right_bound": int(settings[1]), "attempts_count": int(settings[2]), "oe": int(tips[0]), "ml": int(tips[1])}
+                game = GuessTheNumberGame(**user_lvl)
+                game.play()
+            else:
+                continue
 
 
 
