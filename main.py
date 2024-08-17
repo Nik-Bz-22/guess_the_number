@@ -1,5 +1,6 @@
 import random
 import utils
+from colorama import Fore
 
 
 class Tips:
@@ -116,6 +117,82 @@ class GuessTheNumberGame:
 
 
 
+class GameMenu:
+    invalid_binary_choice_message = Fore.RED + "You need to enter (0-No or 1-Yes)" + Fore.RESET
+    def __init__(self):
+        self.selected_lvl_cont = None
+        self.selected_lvl_num = None
+        self.all_lvls = None
+
+    def _read_config_json(self, filename):
+        with open(filename, "r") as config:
+            return json.loads(config.read())
+
+    def start_game(self):
+        game = GuessTheNumberGame(**self.selected_lvl_cont)
+        game.play()
+
+    @utils.error_handle
+    def handle_user_lvl(self):
+        user_input = input("Enter: ")
+        user_input = user_input.strip().split("|")
+        settings = user_input[0].split("-")
+        tips = user_input[1].split("-")
+        if len(user_input) != 2 or len(settings) != 3 or len(tips) != 2 or not list(map(lambda i: int(i), settings+tips)):
+            raise Exception
+        return settings, tips
+    def create_menu(self):
+        while True:
+            created = input(f"Do you want to play already created levels? (0/1): ")
+            if utils.is_binary(created):created = int(created)
+            else:
+                print(GameMenu.invalid_binary_choice_message)
+                continue
+
+            if created:
+                self.all_lvls = self._read_config_json("config.json")
+                lvl_count = len(self.all_lvls)
+
+                while lv_ch := input(f"Which level do you want to play? (1 - {lvl_count}): "):
+                    if not lv_ch.isdigit() or (1 > int(lv_ch) or int(lv_ch) > lvl_count):
+                        print(Fore.RED + "Invalid level number" + Fore.RESET)
+                        continue
+                    break
+                self.selected_lvl_num = int(lv_ch)
+                # if utils.is_int(lv_ch) and (lvl_num := int(lv_ch)) and 1 >= lvl_num >= lvl_count:
+                #     self.selected_lvl_num = lvl_num
+                # else:
+                #     print(Fore.RED+"Invalid level number"+Fore.RESET)
+                self.selected_lvl_cont = self.all_lvls[f"lv{self.selected_lvl_num}"]
+                break
+            else:
+                # yes_create = input("Do you want to create level? (0/1)")
+
+                while (yes_create := input("Do you want to create level? (0/1): ")) and not utils.is_binary(yes_create):
+                    print(GameMenu.invalid_binary_choice_message)
+
+                # if utils.is_binary(yes_create): yes_create = int(yes_create)
+                # else: print(GameMenu.invalid_binary_choice_message)
+
+                if yes_create:
+                    print("Format: left bound(integer)-right bound(integer)-attempts count(integer)|count of tips oe,ml(also written with a hyphen). Example: 1-10-2|1-1")
+
+
+
+                    data = self.handle_user_lvl()
+                    print(data)
+
+
+                    valid_settings = list(map(lambda i: int(i), data[0]))
+                    valid_tips = list(map(lambda i: int(i), data[1]))
+
+                    self.selected_lvl_cont = {"left_bound": valid_settings[0], "right_bound": valid_settings[1],
+                                "attempts_count": valid_settings[2], "oe": valid_tips[0], "ml": valid_tips[1]}
+                    break
+
+                else:
+                    continue
+
 
 
 if __name__ == "__main__":
@@ -124,43 +201,39 @@ if __name__ == "__main__":
     if sys.stdin.isatty():    # CLI
         import cli_handler
         args_ = cli_handler.get_cli_args()
-
     else:      # IDE
         args_ = {"left_bound": 100, "right_bound": 200, "attempts_count": 10, "oe": 3, "ml": 3}
-
-
-
     utils.display_welcome_message()
+    # while True:
+    #     created = int(input(f"Do you want to play already created levels? (0/1): "))
+    #     if created:
+    #         with open("config.json", "r") as levels_file:
+    #             data = levels_file.read()
+    #
+    #         lvls = json.loads(data)
+    #         lvl_count = len(lvls)
+    #
+    #         lvl_choice = int(input(f"Which level do you want to play? (1 - {lvl_count}): "))
+    #
+    #         print(lvls[f"lv{lvl_choice}"])
+    #         game = GuessTheNumberGame(**lvls[f"lv{lvl_choice}"])
+    #         game.play()
+    #     else:
+    #         yes_create = int(input("Do you want to create level? (0/1)"))
+    #         if yes_create:
+    #             print("Format: left bound(integer)-right bound(integer)-attempts count(integer)|count of tips oe,ml(also written with a hyphen). Example: 1-10-2|1-1")
+    #             user_input = input("Enter: ").strip().split("|")
+    #             settings = user_input[0].split("-")
+    #             tips = user_input[1].split("-")
+    #             user_lvl = {"left_bound": int(settings[0]), "right_bound": int(settings[1]), "attempts_count": int(settings[2]), "oe": int(tips[0]), "ml": int(tips[1])}
+    #             game = GuessTheNumberGame(**user_lvl)
+    #             game.play()
+    #         else:
+    #             continue
 
-
-    while True:
-        created = int(input(f"Do you want to play already created levels? (0/1): "))
-        if created:
-            with open("config.json", "r") as levels_file:
-                data = levels_file.read()
-
-            lvls = json.loads(data)
-            lvl_count = len(lvls)
-
-            lvl_choice = int(input(f"Which level do you want to play? (1 - {lvl_count}): "))
-
-            print(lvls[f"lv{lvl_choice}"])
-            game = GuessTheNumberGame(**lvls[f"lv{lvl_choice}"])
-            game.play()
-
-        else:
-            yes_create = int(input("Do you want to create level? (0/1)"))
-            if yes_create:
-                print("Format: left bound(integer)-right bound(integer)-attempts count(integer)|count of tips oe,ml(also written with a hyphen). Example: 1-10-2|1-1")
-                user_input = input("Enter: ").strip().split("|")
-                settings = user_input[0].split("-")
-                tips = user_input[1].split("-")
-                user_lvl = {"left_bound": int(settings[0]), "right_bound": int(settings[1]), "attempts_count": int(settings[2]), "oe": int(tips[0]), "ml": int(tips[1])}
-                game = GuessTheNumberGame(**user_lvl)
-                game.play()
-            else:
-                continue
-
+    menu = GameMenu()
+    menu.create_menu()
+    menu.start_game()
 
 
 
