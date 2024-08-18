@@ -1,32 +1,34 @@
 import random
 import utils
 from colorama import Fore
+import json
 
 
 class Tips:
 
     def odd_or_even(self, settings={}):
-        print("Odd" if settings["game"].target_number % 2 == 1 else "Even")
+        text = "Odd" if settings["game"].target_number % 2 == 1 else "Even"
+        print(Fore.LIGHTGREEN_EX + text + Fore.RESET)
         return 1
 
     def more_or_less_then(self, settings={}):
         if not settings["arg"]:
-            print("You missed an argument for:", "(ml=?)")
+            print(Fore.YELLOW + "You missed an argument for:", "(ml=?)" + Fore.RESET)
             return 0
         try:
             int_arg = int(settings["arg"])
         except ValueError:
-            print("Argument must be a number")
+            print(Fore.RED + "Argument must be a number" + Fore.RESET)
             return 0
         target = settings["game"].target_number
         if target > int_arg:
-            print(f"{int_arg} is less then target number")
+            print(Fore.LIGHTGREEN_EX + f"{int_arg} is less then target number" + Fore.RESET)
 
         elif target == int_arg:
-            print("It is right answer!!")
+            print(Fore.LIGHTYELLOW_EX + "It is right answer!!" + Fore.RESET)
 
         else:
-            print(f"{int_arg} is greater then target number")
+            print(Fore.LIGHTGREEN_EX + f"{int_arg} is greater then target number" + Fore.RESET)
         return 1
 
 class GuessTheNumberGame:
@@ -37,7 +39,6 @@ class GuessTheNumberGame:
         self.attempts_count  = attempts_count if attempts_count > 0 else 1
         self.target_number   = None
         self.set_and_get_num()
-
         self.tips            = {
                                     ":oe": {"func": GuessTheNumberGame.tips_gen.odd_or_even, "count": oe},
                                     ":ml": {"func": GuessTheNumberGame.tips_gen.more_or_less_then, "count": ml},
@@ -72,7 +73,7 @@ class GuessTheNumberGame:
                 if self.tips[command]["func"]({"game": self, "arg": param[-1] if len(param) > 1 else None}):
                     self.tips[command]["count"] -= 1
             else:
-                print(f"You've run out of ({command}) tips")
+                print(Fore.RED + f"You've run out of ({command}) tips" + Fore.RESET)
 
             return 1
         return 0
@@ -83,9 +84,10 @@ class GuessTheNumberGame:
         # self.set_and_get_num()
         print(self.target_number)
         ll = [f"{item[0]} - {item[1]["count"]}" for item in self.tips.items()]
-        print("#" * 30)
-        print(f"Yoy have:\t", "\t".join(ll), sep='')
-        print("#" * 30)
+        print(Fore.CYAN + "#" * 30 + Fore.RESET)
+        print(Fore.CYAN + f"Yoy have:\t", "\t".join(ll)+Fore.RESET, sep='')
+        print(Fore.CYAN + "#" * 30 + Fore.RESET)
+
         for atmp in range(1, self.attempts_count+1):
             rest = self.attempts_count-atmp
 
@@ -97,23 +99,23 @@ class GuessTheNumberGame:
                 if ":" in answer:
                     if self.command_handle(answer):
                         continue
-                print(f"<{answer}>", "[It isn't a number]")
+                print(Fore.RED + f"<{answer}>", "[It isn't a number]" + Fore.RESET)
 
             else:
                 answer = int(answer)
 
 
             if not self.check_in_range_status(answer):
-                print("[Your number out of range]")
+                print(Fore.RED + "[Your number out of range]" + Fore.RESET)
 
             if self.is_right(answer):
-                print("YOU WIN")
+                print(Fore.LIGHTYELLOW_EX + "YOU WIN" + Fore.RESET)
                 return
 
             if rest != 0:
                 print("TRY AGAIN\n", "_"*30, sep="")
             else:
-                print("This was your last attempt. Bye")
+                print(Fore.CYAN + "This was your last attempt. Bye" + Fore.RESET)
 
 
 
@@ -180,7 +182,7 @@ class GameMenu:
 
 
                     data = self.handle_user_lvl()
-                    print(data)
+
 
 
                     valid_settings = list(map(lambda i: int(i), data[0]))
@@ -197,43 +199,27 @@ class GameMenu:
 
 if __name__ == "__main__":
     import sys
-    import json
+
+    utils.display_welcome_message()
+
+    def run():
+        menu = GameMenu()
+        menu.create_menu()
+        menu.start_game()
+
     if sys.stdin.isatty():    # CLI
         import cli_handler
         args_ = cli_handler.get_cli_args()
-    else:      # IDE
-        args_ = {"left_bound": 100, "right_bound": 200, "attempts_count": 10, "oe": 3, "ml": 3}
-    utils.display_welcome_message()
-    # while True:
-    #     created = int(input(f"Do you want to play already created levels? (0/1): "))
-    #     if created:
-    #         with open("config.json", "r") as levels_file:
-    #             data = levels_file.read()
-    #
-    #         lvls = json.loads(data)
-    #         lvl_count = len(lvls)
-    #
-    #         lvl_choice = int(input(f"Which level do you want to play? (1 - {lvl_count}): "))
-    #
-    #         print(lvls[f"lv{lvl_choice}"])
-    #         game = GuessTheNumberGame(**lvls[f"lv{lvl_choice}"])
-    #         game.play()
-    #     else:
-    #         yes_create = int(input("Do you want to create level? (0/1)"))
-    #         if yes_create:
-    #             print("Format: left bound(integer)-right bound(integer)-attempts count(integer)|count of tips oe,ml(also written with a hyphen). Example: 1-10-2|1-1")
-    #             user_input = input("Enter: ").strip().split("|")
-    #             settings = user_input[0].split("-")
-    #             tips = user_input[1].split("-")
-    #             user_lvl = {"left_bound": int(settings[0]), "right_bound": int(settings[1]), "attempts_count": int(settings[2]), "oe": int(tips[0]), "ml": int(tips[1])}
-    #             game = GuessTheNumberGame(**user_lvl)
-    #             game.play()
-    #         else:
-    #             continue
+        # print(args_)
+        sel_menu = args_.pop("menu")
 
-    menu = GameMenu()
-    menu.create_menu()
-    menu.start_game()
+        if not sel_menu:
+            GuessTheNumberGame(**args_).play()
+        else:
+            run()
+
+    else:      # IDE               args_ = {"left_bound": 100, "right_bound": 200, "attempts_count": 10, "oe": 3, "ml": 3}
+        run()
 
 
 
