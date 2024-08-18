@@ -1,4 +1,3 @@
-
 {
   "lv1":
   {
@@ -6,7 +5,8 @@
           "right_bound": 10,
           "attempts_count": 5,
           "oe": 1,
-          "ml": 0
+          "ml": 0,
+          "ri": 1
   },
   "lv2":
   {
@@ -14,7 +14,8 @@
           "right_bound": 30,
           "attempts_count": 6,
           "oe": 1,
-          "ml": 2
+          "ml": 2,
+          "ri": 1
   },
   "lv3":
   {
@@ -22,6 +23,7 @@
           "right_bound": 23,
           "attempts_count": 7,
           "oe": 1,
-          "ml": 3
+          "ml": 3,
+          "ri": 1
   }
 }

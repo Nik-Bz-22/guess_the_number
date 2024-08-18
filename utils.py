@@ -11,6 +11,7 @@ def handle_keyboard_interrupt(func):
             return func(*args, **kwargs)
         except KeyboardInterrupt:
             print("\nBye-Bye ):")
+            exit(1)
 
         except Exception as e:
             print(f"An unexpected error occurred: {e}")

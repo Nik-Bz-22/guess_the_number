@@ -31,17 +31,26 @@ class Tips:
             print(Fore.LIGHTGREEN_EX + f"{int_arg} is greater then target number" + Fore.RESET)
         return 1
 
+    def random_interval(self, settings={}):
+        target_num = settings["game"].target_number
+        left_bound = settings["game"].left_bound
+        right_bound = settings["game"].right_bound
+        interval = f"[{random.randint(left_bound, target_num)} : {random.randint(target_num, right_bound)}]"
+        print(Fore.LIGHTGREEN_EX + f"The number belongs to the interval {interval}" + Fore.RESET)
+        return 1
+
 class GuessTheNumberGame:
     tips_gen = Tips()
-    def __init__(self, attempts_count=1, left_bound=0, right_bound=1, oe=1, ml=1):
-        self.left_bound      = left_bound if left_bound < right_bound else 0
-        self.right_bound     = right_bound if right_bound > left_bound else 1
-        self.attempts_count  = attempts_count if attempts_count > 0 else 1
-        self.target_number   = None
+    def __init__(self, attempts_count=1, left_bound=0, right_bound=1, oe=1, ml=1, ri=1):
+        self.left_bound        = left_bound if left_bound < right_bound else 0
+        self.right_bound       = right_bound if right_bound > left_bound else 1
+        self.attempts_count    = attempts_count if attempts_count > 0 else 1
+        self.target_number     = None
         self.set_and_get_num()
-        self.tips            = {
+        self.tips              = {
                                     ":oe": {"func": GuessTheNumberGame.tips_gen.odd_or_even, "count": oe},
                                     ":ml": {"func": GuessTheNumberGame.tips_gen.more_or_less_then, "count": ml},
+                                    ":ri": {"func": GuessTheNumberGame.tips_gen.random_interval, "count": ri}
                                 }
 
 
@@ -143,6 +152,8 @@ class GameMenu:
         if len(user_input) != 2 or len(settings) != 3 or len(tips) != 2 or not list(map(lambda i: int(i), settings+tips)):
             raise Exception
         return settings, tips
+
+    @utils.handle_keyboard_interrupt
     def create_menu(self):
         while True:
             created = input(f"Do you want to play already created levels? (0/1): ")
@@ -177,7 +188,7 @@ class GameMenu:
                 # else: print(GameMenu.invalid_binary_choice_message)
 
                 if yes_create:
-                    print("Format: left bound(integer)-right bound(integer)-attempts count(integer)|count of tips oe,ml(also written with a hyphen). Example: 1-10-2|1-1")
+                    print(Fore.YELLOW + "Format: left bound(integer)-right bound(integer)-attempts count(integer)|count of tips oe,ml,ri(also written with a hyphen). Example: 1-10-2|1-1-1" + Fore.RESET)
 
 
 
@@ -189,7 +200,8 @@ class GameMenu:
                     valid_tips = list(map(lambda i: int(i), data[1]))
 
                     self.selected_lvl_cont = {"left_bound": valid_settings[0], "right_bound": valid_settings[1],
-                                "attempts_count": valid_settings[2], "oe": valid_tips[0], "ml": valid_tips[1]}
+                                "attempts_count": valid_settings[2], "oe": valid_tips[0], "ml": valid_tips[1],
+                                "ri": valid_tips[2] }
                     break
 
                 else:
