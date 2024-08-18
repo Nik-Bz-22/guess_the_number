@@ -1,4 +1,4 @@
-# random_number_mykyta
+# Guess The Number
 
 ## Usage
 
