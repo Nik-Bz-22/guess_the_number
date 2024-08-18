@@ -16,14 +16,14 @@
 
 
 ### options:
--h, --help            show this help message and exit<br>
--l LEFT_BOUND, --left_bound LEFT_BOUND
+-h, --help   &nbsp;&nbsp;&nbsp;&nbsp;         show this help message and exit<br>
+-l LEFT_BOUND, --left_bound LEFT_BOUND  &nbsp;&nbsp;&nbsp;&nbsp;
                       Left bound of range. Default=0 <br>
--r RIGHT_BOUND, --right_bound RIGHT_BOUND
+-r RIGHT_BOUND, --right_bound RIGHT_BOUND   &nbsp;&nbsp;&nbsp;&nbsp;
                       Right bound of range. Default=1<br>
--a ATTEMPTS_COUNT, --attempts_count ATTEMPTS_COUNT
+-a ATTEMPTS_COUNT, --attempts_count ATTEMPTS_COUNT    &nbsp;&nbsp;&nbsp;&nbsp;
                       Number of attempts. Default=3<br>
--m MENU, --menu MENU  Display game menu. Default=1<br>
---oe OE               Count of :oe tips. Default=1<br>
---ml ML               Count of :ml tips. Default=1<br>
---ri RI               Count of :ri tips. Default=1<br>
+-m MENU, --menu MENU    &nbsp;&nbsp;&nbsp;&nbsp;   Display game menu. Default=1<br>
+--oe OE         &nbsp;&nbsp;&nbsp;&nbsp;      Count of :oe tips. Default=1<br>
+--ml ML      &nbsp;&nbsp;&nbsp;&nbsp;         Count of :ml tips. Default=1<br>
+--ri RI      &nbsp;&nbsp;&nbsp;&nbsp;         Count of :ri tips. Default=1<br>
