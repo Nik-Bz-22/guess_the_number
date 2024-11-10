@@ -4,12 +4,12 @@
 
 ### usage: `main.py` [-h] [-l LEFT_BOUND] [-r RIGHT_BOUND] [-a ATTEMPTS_COUNT] [-m MENU] [--oe OE] [--ml ML] [--ri RI]<br><br>
 
-#### Using tips:
-`:[tip_name]=[argument]`<br>
-List of tips:<br>
-- **oe** (Odd or Even) - показывает, является ли загаданное число чётным или нечётным. Не требует аргументов.<br>
-- **ml** (More or Less) - указывает, больше или меньше ваше число по сравнению с загаданным. Требует один обязательный аргумент.<br>
-- **ri** (Random Interval) - показывает, в какой интервал попадает загаданное число. Не требует аргументов.<br><br>
+#### Using hints:
+`:[hint_name]=[argument]`<br>
+List of hints:<br>
+- **oe** (Odd or Even) - shows whether the guessed number is odd or even. Does not require arguments.<br>
+- **ml** (More or Less) - indicates if your number is higher or lower compared to the guessed number. Requires one mandatory argument.<br>
+- **ri** (Random Interval) - shows the interval in which the guessed number falls. Does not require arguments.<br><br>
 
 #### Example usage:
 1) `:oe`<br>
@@ -17,12 +17,11 @@ List of tips:<br>
 3) `:ri`<br><br>
 
 ### Options:
-- `-h, --help`  &nbsp;&nbsp;&nbsp;&nbsp;  Показать справку и выйти<br>
-- `-l LEFT_BOUND, --left_bound LEFT_BOUND` &nbsp;&nbsp;&nbsp;&nbsp; Левый предел диапазона. По умолчанию = 0<br>
-- `-r RIGHT_BOUND, --right_bound RIGHT_BOUND` &nbsp;&nbsp;&nbsp;&nbsp; Правый предел диапазона. По умолчанию = 1<br>
-- `-a ATTEMPTS_COUNT, --attempts_count ATTEMPTS_COUNT` &nbsp;&nbsp;&nbsp;&nbsp; Количество попыток. По умолчанию = 3<br>
-- `-m MENU, --menu MENU` &nbsp;&nbsp;&nbsp;&nbsp; Показать меню игры. По умолчанию = 1<br>
-- `--oe OE` &nbsp;&nbsp;&nbsp;&nbsp; Количество подсказок :oe. По умолчанию = 1<br>
-- `--ml ML` &nbsp;&nbsp;&nbsp;&nbsp; Количество подсказок :ml. По умолчанию = 1<br>
-- `--ri RI` &nbsp;&nbsp;&nbsp;&nbsp; Количество подсказок :ri. По умолчанию = 1<br>
-
+- `-h, --help`  &nbsp;&nbsp;&nbsp;&nbsp;  Show help message and exit<br>
+- `-l LEFT_BOUND, --left_bound LEFT_BOUND` &nbsp;&nbsp;&nbsp;&nbsp; Left bound of the range. Default = 0<br>
+- `-r RIGHT_BOUND, --right_bound RIGHT_BOUND` &nbsp;&nbsp;&nbsp;&nbsp; Right bound of the range. Default = 1<br>
+- `-a ATTEMPTS_COUNT, --attempts_count ATTEMPTS_COUNT` &nbsp;&nbsp;&nbsp;&nbsp; Number of attempts. Default = 3<br>
+- `-m MENU, --menu MENU` &nbsp;&nbsp;&nbsp;&nbsp; Show game menu. Default = 1<br>
+- `--oe OE` &nbsp;&nbsp;&nbsp;&nbsp; Number of :oe hints. Default = 1<br>
+- `--ml ML` &nbsp;&nbsp;&nbsp;&nbsp; Number of :ml hints. Default = 1<br>
+- `--ri RI` &nbsp;&nbsp;&nbsp;&nbsp; Number of :ri hints. Default = 1<br>
